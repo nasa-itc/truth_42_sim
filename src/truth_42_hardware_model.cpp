@@ -18,7 +18,7 @@ namespace Nos3
         sim_logger->info("Truth42HardwareModel::Truth42HardwareModel:  Data provider %s created.", dp_name.c_str());
         /* ^^^ 1. Get a data provider */
 
-        /* vvv 2. Get on the computer bus */
+        /* vvv 2. Get on the computer bus... in this case it is actually the COSMOS socket, since this is truth data and so it bypasses the flight software computer */
         boost::asio::io_service io_service;
         _socket = new boost::asio::ip::udp::socket(io_service);
         _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), config.get("hardware-model.cosmos-port", 5111));
@@ -64,41 +64,101 @@ namespace Nos3
         const boost::shared_ptr<Truth42DataPoint> data_point =
             boost::dynamic_pointer_cast<Truth42DataPoint>(_truth_42_dp->get_data_point());
 
-        std::vector<uint8_t> data;
-
         double abs_time = _absolute_start_time + (double(time * _sim_microseconds_per_tick)) / 1000000.0;
         double next_time = _prev_time + _stream_period_ms/1000.0 - (_sim_microseconds_per_tick / 1000000.0) / 2; // within half a tick time period
         if (next_time < abs_time) { // Time to send more data
-            create_data(*data_point, data);
-            sim_logger->debug("send_streaming_data:  Data point:  %s\n", data_point->to_string().c_str());
+            std::vector<uint8_t> data = create_data(*data_point);
+            sim_logger->debug("send_streaming_data:  Data point:  %s", data_point->to_string().c_str());
             sim_logger->debug("send_streaming_data:  Writing data:  %s\n", uint8_vector_to_hex_string(data).c_str());
 
-            char s[15];
+            char s[197];
             for (int i=0; i < data.size(); i++) {
                 s[i] = data[i];
             }
-            s[14] = 0;
+            s[196] = 0;
             _socket->send_to(boost::asio::buffer(s), _remote);
             _prev_time = abs_time;
         }
     }
 
-    void Truth42HardwareModel::create_data(const Truth42DataPoint& data_point, std::vector<uint8_t>& out_data)
+    std::vector<uint8_t> Truth42HardwareModel::create_data(const Truth42DataPoint& data_point)
     {
-        out_data.resize(14, 0x00);
-        out_data[0]   = (data_point.get_year()   >> 8) & 0x00FF;
-        out_data[1]   =  data_point.get_year()         & 0x00FF;
-        out_data[2]   = (data_point.get_doy()    >> 8) & 0x00FF;
-        out_data[3]   =  data_point.get_doy()          & 0x00FF;
-        out_data[4]   = (data_point.get_month()  >> 8) & 0x00FF;
-        out_data[5]   =  data_point.get_month()        & 0x00FF;
-        out_data[6]   = (data_point.get_day()    >> 8) & 0x00FF;
-        out_data[7]   =  data_point.get_day()          & 0x00FF;
-        out_data[8]   = (data_point.get_utc_hh() >> 8) & 0x00FF;
-        out_data[9]   =  data_point.get_utc_hh()       & 0x00FF;
-        out_data[10]  = (data_point.get_utc_mm() >> 8) & 0x00FF;
-        out_data[11]  =  data_point.get_utc_mm()       & 0x00FF;
-        out_data[12]  = (data_point.get_utc_ss() >> 8) & 0x00FF;
-        out_data[13]  =  data_point.get_utc_ss()       & 0x00FF;
+        std::vector<uint8_t> out_data, append;
+        std::vector<double> v;
+        out_data.clear();
+        append = int16_to_uint8_vector(data_point.get_year());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = int16_to_uint8_vector(data_point.get_doy());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = int16_to_uint8_vector(data_point.get_month());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = int16_to_uint8_vector(data_point.get_day());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = int16_to_uint8_vector(data_point.get_utc_hh());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = int16_to_uint8_vector(data_point.get_utc_mm());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_utc_ss());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_pos();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_vel();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_svb();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_bvb();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_Hvb();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_wn();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_qn();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[3]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        return out_data;
     }
 }
