@@ -12,7 +12,7 @@ namespace Nos3
     {
     public:
         // Constructor
-        Truth42DataPoint(int16_t spacecraft, const boost::shared_ptr<Sim42DataPoint> dp);
+        Truth42DataPoint(int16_t orbit, int16_t spacecraft, const boost::shared_ptr<Sim42DataPoint> dp);
 
         // Accessors
         std::string to_string(void) const;
@@ -23,8 +23,14 @@ namespace Nos3
         int16_t get_day(void) const {parse_data_point(); return _day;}
         int16_t get_utc_hh(void) const {parse_data_point(); return _utc_hh;}
         int16_t get_utc_mm(void) const {parse_data_point(); return _utc_mm;}
-        int16_t get_utc_ss(void) const {parse_data_point(); return _utc_ss;}
-        int16_t get_utc_frac_secs(void) const {parse_data_point(); return _utc_frac_secs;}
+        double  get_utc_ss(void) const {parse_data_point(); return _utc_ss;}
+        std::vector<double> get_pos(void) const {parse_data_point(); return _pos;} // ECI position (meters=m)
+        std::vector<double> get_vel(void) const {parse_data_point(); return _vel;} // ECI velocity (meters/second=m/s)
+        std::vector<double> get_svb(void)  const {parse_data_point(); return _svb;}  // sun unit vector in body frame (unitless)
+        std::vector<double> get_bvb(void)  const {parse_data_point(); return _bvb;}  // magnetic field vector in body frame (Teslas=T)
+        std::vector<double> get_Hvb(void)  const {parse_data_point(); return _Hvb;}  // angular momentum in body frame (Newton-meter-seconds=Nms)
+        std::vector<double> get_wn(void)   const {parse_data_point(); return _wn;}   // body 0 angular velocity of body in body frame (radians/second=1/s)
+        std::vector<double> get_qn(void)   const {parse_data_point(); return _qn;}   // body 0 quaternion in inertial frame (unitless)
 
     private:
         // Disallow the big 4
@@ -39,11 +45,9 @@ namespace Nos3
         void do_parsing(void) const;
         //@}
 
-        // Private helper
-        void year_doy_to_month_day(int16_t year, int16_t doy, int16_t &month, int16_t &day) const;
-
         // Private data
         Sim42DataPoint _dp;
+        int16_t _orb;
         int16_t _sc;
         // mutable below so parsing can be on demand:
         mutable bool _not_parsed;
@@ -53,8 +57,14 @@ namespace Nos3
         mutable int16_t _day;
         mutable int16_t _utc_hh;
         mutable int16_t _utc_mm;
-        mutable int16_t _utc_ss;
-        mutable int16_t _utc_frac_secs;
+        mutable double  _utc_ss;
+        mutable std::vector<double> _pos;
+        mutable std::vector<double> _vel;
+        mutable std::vector<double> _svb;
+        mutable std::vector<double> _bvb;
+        mutable std::vector<double> _Hvb;
+        mutable std::vector<double> _wn;
+        mutable std::vector<double> _qn;
     };
 }
 

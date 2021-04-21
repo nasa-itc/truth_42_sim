@@ -24,7 +24,7 @@ namespace Nos3
     private:
         // Private helper methods
         void send_streaming_data(NosEngine::Common::SimTime time);
-        void create_data(const Truth42DataPoint& data_point, std::vector<uint8_t>& out_data);
+        std::vector<uint8_t> create_data(const Truth42DataPoint& data_point);
         std::unique_ptr<NosEngine::Client::Bus>             _time_bus; // Very standard
         SimIDataProvider*                                   _truth_42_dp; // I'm only needed if the sim actually has/needs a data provider
         boost::asio::ip::udp::socket                       *_socket;
