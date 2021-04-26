@@ -21,17 +21,17 @@ namespace Nos3
         /* vvv 2. Get on the computer bus... in this case it is actually the COSMOS socket, since this is truth data and so it bypasses the flight software computer */
         boost::asio::io_service io_service;
         _socket = new boost::asio::ip::udp::socket(io_service);
-        _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), config.get("hardware-model.cosmos-port", 5111));
+        _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), config.get("simulator.hardware-model.cosmos-port", 5111));
         _socket->open(boost::asio::ip::udp::v4());
 
         /* vvv 3. Streaming data */
-        _prev_time = _absolute_start_time + config.get("hardware-model.initial-stream-time", 1.0); // Delta from start time to begin streaming
-        _stream_period_ms = config.get("hardware-model.stream-period-ms", 1000); // Time in milliseconds between streamed messages
+        _prev_time = _absolute_start_time + config.get("simulator.hardware-model.initial-stream-time", 1.0); // Delta from start time to begin streaming
+        _stream_period_ms = config.get<uint32_t>("simulator.hardware-model.stream-period-ms", 1000); // Time in milliseconds between streamed messages
 
         std::string time_bus_name = "command"; // Initialize to default in case value not found in config file
-        if (config.get_child_optional("hardware-model.connections")) 
+        if (config.get_child_optional("simulator.hardware-model.connections")) 
         {
-            BOOST_FOREACH(const boost::property_tree::ptree::value_type &v, config.get_child("hardware-model.connections")) // Loop through the connections for *this* hw model
+            BOOST_FOREACH(const boost::property_tree::ptree::value_type &v, config.get_child("simulator.hardware-model.connections")) // Loop through the connections for *this* hw model
             {
                 if (v.second.get("type", "").compare("time") == 0) // v.second is the child tree (v.first is the name of the child)
                 {
