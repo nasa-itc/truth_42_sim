@@ -25,8 +25,10 @@ namespace Nos3
         _socket->open(boost::asio::ip::udp::v4());
 
         /* vvv 3. Streaming data */
-        _prev_time = _absolute_start_time + config.get("simulator.hardware-model.initial-stream-time", 1.0); // Delta from start time to begin streaming
+        _initial_stream_time = config.get("simulator.hardware-model.initial-stream-time", 1.0); // Delta from start time to begin streaming
+        _prev_time = _absolute_start_time + _initial_stream_time;
         _stream_period_ms = config.get<uint32_t>("simulator.hardware-model.stream-period-ms", 1000); // Time in milliseconds between streamed messages
+        _use_nos_time = (config.get("simulator.hardware-model.nos-or-wall-time", "NOS").compare("WALL") != 0); // "NOS" to use NOS engine time ticks to drive streamed messages; "WALL" to use wall time to drive streamed messages
 
         std::string time_bus_name = "command"; // Initialize to default in case value not found in config file
         if (config.get_child_optional("simulator.hardware-model.connections")) 
@@ -41,8 +43,10 @@ namespace Nos3
             }
         }
         _time_bus.reset(new NosEngine::Client::Bus(_hub, connection_string, time_bus_name));
-        _time_bus->add_time_tick_callback(std::bind(&Truth42HardwareModel::send_streaming_data, this, std::placeholders::_1));
-        sim_logger->info("Truth42HardwareModel::Truth42HardwareModel:  Now on time bus %s, executing callback to stream data.", time_bus_name.c_str());
+        if (_use_nos_time) {
+            _time_bus->add_time_tick_callback(std::bind(&Truth42HardwareModel::send_streaming_data, this, std::placeholders::_1));
+            sim_logger->info("Truth42HardwareModel::Truth42HardwareModel:  Now on time bus %s, executing callback to stream data.", time_bus_name.c_str());
+        } // else we are going to stream messages based on wall time in the run method
         /* ^^^ 3. Streaming data */
     }
 
@@ -57,6 +61,22 @@ namespace Nos3
         _truth_42_dp = nullptr;
 
         // 3. Don't need to clean up the time node, the bus will do it
+    }
+
+    void Truth42HardwareModel::run(void)
+    {
+        if (_use_nos_time) {
+            SimIHardwareModel::run();
+        } else {
+            std::this_thread::sleep_for(std::chrono::microseconds((uint64_t)(_initial_stream_time * 1000000.0)));
+            NosEngine::Common::SimTime time = 0;
+            while(_keep_running)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(_stream_period_ms));
+                send_streaming_data(time);
+                time++;
+            }
+        }
     }
 
     void Truth42HardwareModel::send_streaming_data(NosEngine::Common::SimTime time)

@@ -21,6 +21,9 @@ namespace Nos3
         Truth42HardwareModel(const boost::property_tree::ptree& config);
         ~Truth42HardwareModel(void);
 
+        // Accessors
+        void run(void); // override
+
     private:
         // Private helper methods
         void send_streaming_data(NosEngine::Common::SimTime time);
@@ -29,9 +32,10 @@ namespace Nos3
         SimIDataProvider*                                   _truth_42_dp; // I'm only needed if the sim actually has/needs a data provider
         boost::asio::ip::udp::socket                       *_socket;
         boost::asio::ip::udp::endpoint                      _remote;
+        double                                              _initial_stream_time;
         double                                              _prev_time;
         std::uint32_t                                       _stream_period_ms;
-
+        bool                                                _use_nos_time; // true = use NOS time ticks to drive streamed messages; false = use wall time to drive streamed messages
     };
 }
 
