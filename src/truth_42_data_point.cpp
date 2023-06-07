@@ -11,7 +11,7 @@ namespace Nos3
      * Constructors
      *************************************************************************/
     Truth42DataPoint::Truth42DataPoint(int16_t orbit, int16_t spacecraft, const boost::shared_ptr<Sim42DataPoint> dp) : 
-        _orb(orbit), _sc(spacecraft), _dp(*dp), _not_parsed(true) 
+        _dp(*dp), _orb(orbit), _sc(spacecraft), _not_parsed(true) 
     {
         sim_logger->trace("Truth42DataPoint::Truth42DataPoint:  Created instance using _orb=%d, _sc=%d, _dp=%s", 
             _orb, _sc, _dp.to_string().c_str());
@@ -45,7 +45,7 @@ namespace Nos3
             _wn.resize(3);
             _qn.resize(3);
             std::vector<double> posr(3), posn(3), velr(3), veln(3);
-            for (int i = 0; i < lines.size(); i++) {
+            for (unsigned int i = 0; i < lines.size(); i++) {
                 if (lines[i].compare(0, 4, "TIME") == 0) { // e.g. TIME 2017-181-16:00:16.333600000
                     sim_logger->trace("Truth42DataPoint::do_parsing:  Found a string with the correct prefix = TIME.  String:  %s", lines[i].c_str());
                     sim_logger->trace("FOUND TIME STRING: %s",lines[i].c_str());
