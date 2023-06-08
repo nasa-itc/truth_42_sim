@@ -15,7 +15,8 @@ namespace Nos3
         sim_logger->trace("Truth42DataProvider::Truth42DataProvider:  Constructor executed");
 
         connect_reader_thread_as_42_socket_client(
-            config.get("simulator.hardware-model.data-provider.hostname", "localhost"),
+//            config.get("simulator.hardware-model.data-provider.hostname", "localhost"),
+            config.get("simulator.hardware-model.data-provider.hostname", "fortytwo"),
             config.get("simulator.hardware-model.data-provider.port", 4242) );
 
         _orb = config.get("simulator.hardware-model.data-provider.orbit", 0);
