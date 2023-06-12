@@ -24,6 +24,8 @@ namespace Nos3
         _socket = new boost::asio::ip::udp::socket(io_service);
 //        _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(config.get("simulator.hardware-model.cosmos-ip", "127.0.0.1")), config.get("simulator.hardware-model.cosmos-port", 5111)); // ORIGINAL VERSION
         printf("Just before trying to connect to COSMOS\n");
+        sleep(15);
+
         _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(config.get("simulator.hardware-model.cosmos-ip", "cosmos")), config.get("simulator.hardware-model.cosmos-port", 5111));
 
         printf("Just before 'streaming data' section\n");
