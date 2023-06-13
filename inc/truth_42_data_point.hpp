@@ -36,7 +36,7 @@ namespace Nos3
         // Disallow the big 4
         Truth42DataPoint(void) {};
         Truth42DataPoint(const Truth42DataPoint&) {};
-        Truth42DataPoint& operator=(const Truth42DataPoint&) {};
+        Truth42DataPoint& operator=(const Truth42DataPoint&) {return *this;};
         ~Truth42DataPoint(void) {};
 
         /// @name Private mutators
