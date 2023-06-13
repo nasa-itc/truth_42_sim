@@ -20,7 +20,7 @@ namespace Nos3
     private:
         // Disallow these
         ~Truth42DataProvider(void) {};
-        Truth42DataProvider& operator=(const Truth42DataProvider&) {};
+        Truth42DataProvider& operator=(const Truth42DataProvider&) {return *this;};
         int16_t _orb; // Which orbit number to parse out of 42 data
         int16_t _sc;  // Which spacecraft number to parse out of 42 data
     };

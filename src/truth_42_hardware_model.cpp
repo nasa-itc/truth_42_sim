@@ -92,7 +92,7 @@ namespace Nos3
             sim_logger->debug("send_streaming_data:  Writing data:  %s\n", uint8_vector_to_hex_string(data).c_str());
 
             char s[197];
-            for (int i=0; i < data.size(); i++) {
+            for (unsigned int i=0; i < data.size(); i++) {
                 s[i] = data[i];
             }
             s[196] = 0;
