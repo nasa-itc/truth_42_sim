@@ -8,7 +8,6 @@ namespace Nos3
 
     Truth42HardwareModel::Truth42HardwareModel(const boost::property_tree::ptree& config) : SimIHardwareModel(config)
     {
-//        std::string connection_string = config.get("common.nos-connection-string", "tcp://127.0.0.1:12001"); // Get the NOS engine connection string, needed for the busses - ORIGINAL VERSION
         std::string connection_string = config.get("common.nos-connection-string", "tcp://nos_engine_server:12001"); // Get the NOS engine connection string, needed for the busses
         sim_logger->info("SampleHardwareModel::SampleHardwareModel:  NOS Engine connection string: %s.", connection_string.c_str());
 
@@ -22,13 +21,7 @@ namespace Nos3
         /* vvv 2. Get on the computer bus... in this case it is actually the COSMOS socket, since this is truth data and so it bypasses the flight software computer */
         boost::asio::io_service io_service;
         _socket = new boost::asio::ip::udp::socket(io_service);
-//        _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(config.get("simulator.hardware-model.cosmos-ip", "127.0.0.1")), config.get("simulator.hardware-model.cosmos-port", 5111)); // ORIGINAL VERSION
-        printf("Just before trying to connect to COSMOS\n");
-        sleep(15);
-
-        _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(config.get("simulator.hardware-model.cosmos-ip", "cosmos")), config.get("simulator.hardware-model.cosmos-port", 5111));
-
-        printf("Just before 'streaming data' section\n");
+        _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(HostToIp(config.get("simulator.hardware-model.cosmos-hostname", "cosmos"))), config.get("simulator.hardware-model.cosmos-port", 5111));
         _socket->open(boost::asio::ip::udp::v4());
 
         /* vvv 3. Streaming data */
@@ -85,6 +78,20 @@ namespace Nos3
             }
         }
     }
+
+    /*
+        Start hostname snippet from https://stackoverflow.com/questions/9400756/ip-address-from-host-name-in-windows-socket-programming
+    */
+    std::string Truth42HardwareModel::HostToIp(const std::string& host) 
+    {
+        hostent* hostname = gethostbyname(host.c_str());
+        if(hostname)
+            return std::string(inet_ntoa(**(in_addr**)hostname->h_addr_list));
+        return {};
+    }
+    /*
+        End hostname snippet from https://stackoverflow.com/questions/9400756/ip-address-from-host-name-in-windows-socket-programming
+    */
 
     void Truth42HardwareModel::send_streaming_data(NosEngine::Common::SimTime time)
     {
