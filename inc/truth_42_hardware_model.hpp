@@ -26,6 +26,7 @@ namespace Nos3
 
     private:
         // Private helper methods
+        std::string HostToIp(const std::string& host);
         void send_streaming_data(NosEngine::Common::SimTime time);
         std::vector<uint8_t> create_data(const Truth42DataPoint& data_point);
         std::unique_ptr<NosEngine::Client::Bus>             _time_bus; // Very standard
