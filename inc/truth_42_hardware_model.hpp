@@ -11,6 +11,16 @@
 #include <truth_42_data_point.hpp>
 #include <sim_i_hardware_model.hpp>
 
+/*
+    Start includes for hostname snippet
+*/
+#include <string>
+#include <netdb.h>
+#include <arpa/inet.h>
+/*
+    End includes for hostname snippet
+*/
+
 namespace Nos3
 {
     // vvv This is pretty standard for a hardware model
@@ -26,6 +36,7 @@ namespace Nos3
 
     private:
         // Private helper methods
+        std::string HostToIp(const std::string& host);
         void send_streaming_data(NosEngine::Common::SimTime time);
         std::vector<uint8_t> create_data(const Truth42DataPoint& data_point);
         std::unique_ptr<NosEngine::Client::Bus>             _time_bus; // Very standard
