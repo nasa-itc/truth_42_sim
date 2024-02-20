@@ -21,7 +21,7 @@ namespace Nos3
         /* vvv 2. Get on the computer bus... in this case it is actually the COSMOS socket, since this is truth data and so it bypasses the flight software computer */
         boost::asio::io_service io_service;
         _socket = new boost::asio::ip::udp::socket(io_service);
-        _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(config.get("simulator.hardware-model.cosmos-ip", "127.0.0.1")), config.get("simulator.hardware-model.cosmos-port", 5111));
+        _remote = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(HostToIp(config.get("simulator.hardware-model.cosmos-hostname", "127.0.0.1"))), config.get("simulator.hardware-model.cosmos-port", 5111));
         _socket->open(boost::asio::ip::udp::v4());
 
         /* vvv 3. Streaming data */
@@ -78,6 +78,20 @@ namespace Nos3
             }
         }
     }
+
+    /*
+        Start hostname snippet from https://stackoverflow.com/questions/9400756/ip-address-from-host-name-in-windows-socket-programming
+    */
+    std::string Truth42HardwareModel::HostToIp(const std::string& host) 
+    {
+        hostent* hostname = gethostbyname(host.c_str());
+        if(hostname)
+            return std::string(inet_ntoa(**(in_addr**)hostname->h_addr_list));
+        return {};
+    }
+    /*
+        End hostname snippet from https://stackoverflow.com/questions/9400756/ip-address-from-host-name-in-windows-socket-programming
+    */
 
     void Truth42HardwareModel::send_streaming_data(NosEngine::Common::SimTime time)
     {
