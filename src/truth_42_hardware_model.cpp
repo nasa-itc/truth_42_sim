@@ -79,19 +79,36 @@ namespace Nos3
         }
     }
 
-    /*
-        Start hostname snippet from https://stackoverflow.com/questions/9400756/ip-address-from-host-name-in-windows-socket-programming
-    */
+
     std::string Truth42HardwareModel::HostToIp(const std::string& host) 
     {
-        hostent* hostname = gethostbyname(host.c_str());
-        if(hostname)
-            return std::string(inet_ntoa(**(in_addr**)hostname->h_addr_list));
+        struct addrinfo hints, *res, *p;
+        void *addr;
+        char ipstr[INET_ADDRSTRLEN] = "";
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET; // Use AF_UNSPEC for IPv6 support if needed
+        hints.ai_socktype = SOCK_STREAM;
+
+        if (getaddrinfo(host.c_str(), NULL, &hints, &res) == 0) 
+        {
+            for (p = res; p != NULL; p = p->ai_next) 
+            {
+                struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
+                addr = &(ipv4->sin_addr);
+
+                // Convert to string
+                if (inet_ntop(p->ai_family, addr, ipstr, sizeof(ipstr)) != NULL)
+                {
+                    freeaddrinfo(res);
+                    return std::string(ipstr);
+                }
+            }
+            freeaddrinfo(res);
+        }
+
         return {};
     }
-    /*
-        End hostname snippet from https://stackoverflow.com/questions/9400756/ip-address-from-host-name-in-windows-socket-programming
-    */
 
     void Truth42HardwareModel::send_streaming_data(NosEngine::Common::SimTime time)
     {
