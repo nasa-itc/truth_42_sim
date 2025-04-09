@@ -81,6 +81,8 @@ namespace Nos3
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+10, std::string::npos), _wn);
                     } else if (lines[i].compare(SCMSsize, 10, "B[0].qn = ") == 0) {
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+10, std::string::npos), _qn);
+                    } else if (lines[i].compare(SCMSsize, 17, "AC.GPS[0].PosW = ") == 0) {
+                        _dp.parse_double_vector(lines[i].substr(SCMSsize+17, std::string::npos), _pos_ecef);
                     }
                 }
             }
@@ -109,13 +111,14 @@ namespace Nos3
         ss << "Truth 42 Data Point:";
         ss << " UTC Year-DayOfYear-Time: " << std::setw(4) << _year << "-" << std::setw(3) << _doy << "(" << std::setw(2) << _month << "/" << std::setw(2) << _day << ")";
         ss << "T" << std::setw(2) << _utc_hh << ":" << std::setw(2) << _utc_mm << ":" << std::setw(9) << std::setprecision(6) << _utc_ss;
-        ss << std::setprecision(0) << " Pos: " << _pos[0] << ", " << _pos[1] << ", " << _pos[2];
-        ss << std::setprecision(0) << " Vel: " << _vel[0] << ", " << _vel[1] << ", " << _vel[2];
-        ss << std::setprecision(3) << " svb: " << _svb[0] << ", " << _svb[1] << ", " << _svb[2];
-        ss << std::setprecision(9) << " bvb: " << _bvb[0] << ", " << _bvb[1] << ", " << _bvb[2];
-        ss << std::setprecision(3) << " Hvb: " << _Hvb[0] << ", " << _Hvb[1] << ", " << _Hvb[2];
-        ss << std::setprecision(3) << " wn : " << _wn[0]  << ", " << _wn[1]  << ", " << _wn[2];
-        ss << std::setprecision(3) << " qn : " << _qn[0]  << ", " << _qn[1]  << ", " << _qn[2]  << ", " << _qn[3];
+        ss << std::setprecision(0) << " Pos:  " << _pos[0]      << ", " << _pos[1]      << ", " << _pos[2];
+        ss << std::setprecision(0) << " Vel:  " << _vel[0]      << ", " << _vel[1]      << ", " << _vel[2];
+        ss << std::setprecision(3) << " svb:  " << _svb[0]      << ", " << _svb[1]      << ", " << _svb[2];
+        ss << std::setprecision(9) << " bvb:  " << _bvb[0]      << ", " << _bvb[1]      << ", " << _bvb[2];
+        ss << std::setprecision(3) << " Hvb:  " << _Hvb[0]      << ", " << _Hvb[1]      << ", " << _Hvb[2];
+        ss << std::setprecision(3) << " wn :  " << _wn[0]       << ", " << _wn[1]       << ", " << _wn[2];
+        ss << std::setprecision(3) << " qn :  " << _qn[0]       << ", " << _qn[1]       << ", " << _qn[2]       << ", " << _qn[3];
+        ss << std::setprecision(0) << " PosW: " << _pos_ecef[0] << ", " << _pos_ecef[1] << ", " << _pos_ecef[2];
 
         return ss.str();
     }

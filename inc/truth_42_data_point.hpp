@@ -31,6 +31,7 @@ namespace Nos3
         std::vector<double> get_Hvb(void)  const {parse_data_point(); return _Hvb;}  // angular momentum in body frame (Newton-meter-seconds=Nms)
         std::vector<double> get_wn(void)   const {parse_data_point(); return _wn;}   // body 0 angular velocity of body in body frame (radians/second=1/s)
         std::vector<double> get_qn(void)   const {parse_data_point(); return _qn;}   // body 0 quaternion in inertial frame (unitless)
+        std::vector<double> get_pos_ecef(void) const {parse_data_point(); return _pos_ecef;} // ECEF position (meters=m)
 
     private:
         // Disallow the big 4
@@ -65,6 +66,7 @@ namespace Nos3
         mutable std::vector<double> _Hvb;
         mutable std::vector<double> _wn;
         mutable std::vector<double> _qn;
+        mutable std::vector<double> _pos_ecef;
     };
 }
 
