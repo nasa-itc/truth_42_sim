@@ -33,6 +33,12 @@ namespace Nos3
         std::vector<double> get_qn(void)   const {parse_data_point(); return _qn;}   // body 0 quaternion in inertial frame (unitless)
         std::vector<double> get_pos_ecef(void) const {parse_data_point(); return _pos_ecef;} // ECEF position (meters=m)
         std::vector<double> get_vel_ecef(void) const {parse_data_point(); return _vel_ecef;} // ECEF velocity (meters/seconds=m/s)
+        double get_gyro_x(void) const {parse_data_point(); return _gyro_b_x;} // Gyroscope Linear Velocity in the Body Frame, X Component (degrees/seconds=deg/s)
+        double get_acc_x(void) const {parse_data_point(); return _acc_b_x;} // Linear Acceleration in the Body Frame, X Component (meters/seconds/seconds=m/s^2)
+        double get_gyro_y(void) const {parse_data_point(); return _gyro_b_y;} // Gyroscope Linear Velocity in the Body Frame, Y Component (degrees/seconds=deg/s)
+        double get_acc_y(void) const {parse_data_point(); return _acc_b_y;} // Linear Acceleration in the Body Frame, Y Component (meters/seconds/seconds=m/s^2)
+        double get_gyro_z(void) const {parse_data_point(); return _gyro_b_z;} // Gyroscope Linear Velocity in the Body Frame, Z Component (degrees/seconds=deg/s)
+        double get_acc_z(void) const {parse_data_point(); return _acc_b_z;} // Linear Acceleration in the Body Frame, Z Component (meters/seconds/seconds=m/s^2)
 
     private:
         // Disallow the big 4
@@ -69,6 +75,12 @@ namespace Nos3
         mutable std::vector<double> _qn;
         mutable std::vector<double> _pos_ecef;
         mutable std::vector<double> _vel_ecef;
+        mutable double _acc_b_x;
+        mutable double _acc_b_y;
+        mutable double _acc_b_z;
+        mutable double _gyro_b_x;
+        mutable double _gyro_b_y;
+        mutable double _gyro_b_z;
     };
 }
 

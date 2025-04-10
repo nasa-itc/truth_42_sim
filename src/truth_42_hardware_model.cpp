@@ -122,11 +122,11 @@ namespace Nos3
             sim_logger->debug("send_streaming_data:  Data point:  %s", data_point->to_string().c_str());
             sim_logger->debug("send_streaming_data:  Writing data:  %s\n", uint8_vector_to_hex_string(data).c_str());
 
-            char s[245];
+            char s[293];
             for (unsigned int i=0; i < data.size(); i++) {
                 s[i] = data[i];
             }
-            s[244] = 0;
+            s[292] = 0;
             _socket->send_to(boost::asio::buffer(s), _remote);
             _prev_time = abs_time;
         }
@@ -224,6 +224,19 @@ namespace Nos3
         append = double_to_uint8_vector(v[1]);
         out_data.insert(out_data.end(), append.begin(), append.end());
         append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        append = double_to_uint8_vector(data_point.get_gyro_x());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_acc_x());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_gyro_y());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_acc_y());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_gyro_z());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_acc_z());
         out_data.insert(out_data.end(), append.begin(), append.end());
 
         return out_data;

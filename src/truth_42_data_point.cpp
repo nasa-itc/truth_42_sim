@@ -85,6 +85,18 @@ namespace Nos3
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+17, std::string::npos), _pos_ecef);
                     } else if (lines[i].compare(SCMSsize, 17, "AC.GPS[0].VelW = ") == 0) {
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+17, std::string::npos), _vel_ecef);
+                    } else if (lines[i].compare(SCMSsize, 24, "SC[0].AC.Accel[0].Acc = ") == 0) {
+                        _acc_b_x = std::stod(lines[i].substr(SCMSsize+24, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 24, "SC[0].AC.Accel[1].Acc = ") == 0) {
+                        _acc_b_y = std::stod(lines[i].substr(SCMSsize+24, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 24, "SC[0].AC.Accel[2].Acc = ") == 0) {
+                        _acc_b_z = std::stod(lines[i].substr(SCMSsize+24, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 24, "SC[0].AC.Gyro[0].Rate = ") == 0) {
+                        _gyro_b_x = std::stod(lines[i].substr(SCMSsize+24, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 24, "SC[0].AC.Gyro[1].Rate = ") == 0) {
+                        _gyro_b_y = std::stod(lines[i].substr(SCMSsize+24, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 24, "SC[0].AC.Gyro[2].Rate = ") == 0) {
+                        _gyro_b_z = std::stod(lines[i].substr(SCMSsize+24, std::string::npos));
                     }
                 }
             }
@@ -122,6 +134,8 @@ namespace Nos3
         ss << std::setprecision(3) << " qn :  " << _qn[0]       << ", " << _qn[1]       << ", " << _qn[2]       << ", " << _qn[3];
         ss << std::setprecision(0) << " PosW: " << _pos_ecef[0] << ", " << _pos_ecef[1] << ", " << _pos_ecef[2];
         ss << std::setprecision(0) << " VelW: " << _vel_ecef[0] << ", " << _vel_ecef[1] << ", " << _vel_ecef[2];
+        ss << std::setprecision(0) << " LinAccB: " << _acc_b_x << ", " << _acc_b_y << ", " << _acc_b_z;
+        ss << std::setprecision(0) << " GyroB: " << _gyro_b_x << ", " << _gyro_b_y << ", " << _gyro_b_z;
 
         return ss.str();
     }
