@@ -83,6 +83,8 @@ namespace Nos3
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+10, std::string::npos), _qn);
                     } else if (lines[i].compare(SCMSsize, 17, "AC.GPS[0].PosW = ") == 0) {
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+17, std::string::npos), _pos_ecef);
+                    } else if (lines[i].compare(SCMSsize, 17, "AC.GPS[0].VelW = ") == 0) {
+                        _dp.parse_double_vector(lines[i].substr(SCMSsize+17, std::string::npos), _vel_ecef);
                     }
                 }
             }
@@ -119,6 +121,7 @@ namespace Nos3
         ss << std::setprecision(3) << " wn :  " << _wn[0]       << ", " << _wn[1]       << ", " << _wn[2];
         ss << std::setprecision(3) << " qn :  " << _qn[0]       << ", " << _qn[1]       << ", " << _qn[2]       << ", " << _qn[3];
         ss << std::setprecision(0) << " PosW: " << _pos_ecef[0] << ", " << _pos_ecef[1] << ", " << _pos_ecef[2];
+        ss << std::setprecision(0) << " VelW: " << _vel_ecef[0] << ", " << _vel_ecef[1] << ", " << _vel_ecef[2];
 
         return ss.str();
     }
