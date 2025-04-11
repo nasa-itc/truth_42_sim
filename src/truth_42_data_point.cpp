@@ -97,7 +97,13 @@ namespace Nos3
                         _gyro_b_y = std::stod(lines[i].substr(SCMSsize+18, std::string::npos));
                     } else if (lines[i].compare(SCMSsize, 18, "AC.Gyro[2].Rate = ") == 0) {
                         _gyro_b_z = std::stod(lines[i].substr(SCMSsize+18, std::string::npos));
-                    }
+                    } else if (lines[i].compare(SCMSsize, 14, "AC.Whl[0].H = ") == 0) {
+                        _rw_momentum_0 = std::stod(lines[i].substr(SCMSsize+14, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 14, "AC.Whl[1].H = ") == 0) {
+                        _rw_momentum_1 = std::stod(lines[i].substr(SCMSsize+14, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 14, "AC.Whl[2].H = ") == 0) {
+                        _rw_momentum_2 = std::stod(lines[i].substr(SCMSsize+14, std::string::npos));
+                    } 
                 }
             }
             for (int i = 0; i < 3; i++) {
@@ -136,6 +142,7 @@ namespace Nos3
         ss << std::setprecision(0) << " VelW: "    << _vel_ecef[0] << ", " << _vel_ecef[1] << ", " << _vel_ecef[2];
         ss << std::setprecision(3) << " LinAccB: " << _acc_b_x     << ", " << _acc_b_y     << ", " << _acc_b_z;
         ss << std::setprecision(5) << " GyroB: "   << _gyro_b_x    << ", " << _gyro_b_y    << ", " << _gyro_b_z;
+        ss << std::setprecision(6) << " rwH: "     << _rw_momentum_0 << ", " << _rw_momentum_1 << ", " << _rw_momentum_2;
 
         return ss.str();
     }

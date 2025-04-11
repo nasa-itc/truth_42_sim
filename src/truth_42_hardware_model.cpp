@@ -122,11 +122,11 @@ namespace Nos3
             sim_logger->debug("send_streaming_data:  Data point:  %s", data_point->to_string().c_str());
             sim_logger->debug("send_streaming_data:  Writing data:  %s\n", uint8_vector_to_hex_string(data).c_str());
 
-            char s[293];
+            char s[317];
             for (unsigned int i=0; i < data.size(); i++) {
                 s[i] = data[i];
             }
-            s[292] = 0;
+            s[316] = 0;
             _socket->send_to(boost::asio::buffer(s), _remote);
             _prev_time = abs_time;
         }
@@ -238,6 +238,13 @@ namespace Nos3
         out_data.insert(out_data.end(), append.begin(), append.end());
         append = double_to_uint8_vector(data_point.get_gyro_z());
         out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_rwh_0());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_rwh_1());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_rwh_2());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
 
         return out_data;
     }

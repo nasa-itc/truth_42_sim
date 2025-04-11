@@ -33,12 +33,15 @@ namespace Nos3
         std::vector<double> get_qn(void)   const {parse_data_point(); return _qn;}   // body 0 quaternion in inertial frame (unitless)
         std::vector<double> get_pos_ecef(void) const {parse_data_point(); return _pos_ecef;} // ECEF position (meters=m)
         std::vector<double> get_vel_ecef(void) const {parse_data_point(); return _vel_ecef;} // ECEF velocity (meters/seconds=m/s)
-        double get_gyro_x(void) const {parse_data_point(); return _gyro_b_x;} // Gyroscope Linear Velocity in the Body Frame, X Component (degrees/seconds=deg/s)
+        double get_gyro_x(void) const {parse_data_point(); return _gyro_b_x;} // Gyroscope Linear Velocity in the Body Frame, X Component (radians/seconds=rad/s)
         double get_acc_x(void) const {parse_data_point(); return _acc_b_x;} // Linear Acceleration in the Body Frame, X Component (meters/seconds/seconds=m/s^2)
-        double get_gyro_y(void) const {parse_data_point(); return _gyro_b_y;} // Gyroscope Linear Velocity in the Body Frame, Y Component (degrees/seconds=deg/s)
+        double get_gyro_y(void) const {parse_data_point(); return _gyro_b_y;} // Gyroscope Linear Velocity in the Body Frame, Y Component (radians/seconds=rad/s)
         double get_acc_y(void) const {parse_data_point(); return _acc_b_y;} // Linear Acceleration in the Body Frame, Y Component (meters/seconds/seconds=m/s^2)
-        double get_gyro_z(void) const {parse_data_point(); return _gyro_b_z;} // Gyroscope Linear Velocity in the Body Frame, Z Component (degrees/seconds=deg/s)
+        double get_gyro_z(void) const {parse_data_point(); return _gyro_b_z;} // Gyroscope Linear Velocity in the Body Frame, Z Component (radians/seconds=rad/s)
         double get_acc_z(void) const {parse_data_point(); return _acc_b_z;} // Linear Acceleration in the Body Frame, Z Component (meters/seconds/seconds=m/s^2)
+        double get_rwh_0(void) const{parse_data_point(); return _rw_momentum_0;} // Reaction Wheel 0 Angular Momentum, (Newtons-Meters-Seconds=Nms)
+        double get_rwh_1(void) const{parse_data_point(); return _rw_momentum_1;} // Reaction Wheel 1 Angular Momentum, (Newtons-Meters-Seconds=Nms)
+        double get_rwh_2(void) const{parse_data_point(); return _rw_momentum_2;} // Reaction Wheel 2 Angular Momentum, (Newtons-Meters-Seconds=Nms)
 
     private:
         // Disallow the big 4
@@ -81,6 +84,9 @@ namespace Nos3
         mutable double _gyro_b_x;
         mutable double _gyro_b_y;
         mutable double _gyro_b_z;
+        mutable double _rw_momentum_0;
+        mutable double _rw_momentum_1;
+        mutable double _rw_momentum_2;
     };
 }
 
