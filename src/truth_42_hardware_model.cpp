@@ -226,17 +226,17 @@ namespace Nos3
         append = double_to_uint8_vector(v[2]);
         out_data.insert(out_data.end(), append.begin(), append.end());
 
-        append = double_to_uint8_vector(data_point.get_gyro_x());
-        out_data.insert(out_data.end(), append.begin(), append.end());
         append = double_to_uint8_vector(data_point.get_acc_x());
-        out_data.insert(out_data.end(), append.begin(), append.end());
-        append = double_to_uint8_vector(data_point.get_gyro_y());
         out_data.insert(out_data.end(), append.begin(), append.end());
         append = double_to_uint8_vector(data_point.get_acc_y());
         out_data.insert(out_data.end(), append.begin(), append.end());
-        append = double_to_uint8_vector(data_point.get_gyro_z());
-        out_data.insert(out_data.end(), append.begin(), append.end());
         append = double_to_uint8_vector(data_point.get_acc_z());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_gyro_x());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_gyro_y());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_gyro_z());
         out_data.insert(out_data.end(), append.begin(), append.end());
 
         return out_data;
