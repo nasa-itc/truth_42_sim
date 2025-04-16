@@ -44,6 +44,8 @@ namespace Nos3
             _Hvb.resize(3);
             _wn.resize(3);
             _qn.resize(4);
+            _pos_ecef.resize(3);
+            _vel_ecef.resize(3);
             std::vector<double> posr(3), posn(3), velr(3), veln(3);
             for (unsigned int i = 0; i < lines.size(); i++) {
                 if (lines[i].compare(0, 4, "TIME") == 0) { // e.g. TIME 2017-181-16:00:16.333600000
