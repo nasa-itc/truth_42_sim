@@ -83,28 +83,28 @@ namespace Nos3
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+10, std::string::npos), _wn);
                     } else if (lines[i].compare(SCMSsize, 10, "B[0].qn = ") == 0) {
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+10, std::string::npos), _qn);
-                    } else if (lines[i].compare(SCMSsize, 17, "AC.GPS[0].PosW = ") == 0) {
-                        _dp.parse_double_vector(lines[i].substr(SCMSsize+17, std::string::npos), _pos_ecef);
-                    } else if (lines[i].compare(SCMSsize, 17, "AC.GPS[0].VelW = ") == 0) {
-                        _dp.parse_double_vector(lines[i].substr(SCMSsize+17, std::string::npos), _vel_ecef);
-                    } else if (lines[i].compare(SCMSsize, 18, "AC.Accel[0].Acc = ") == 0) {
-                        _acc_b_x = std::stod(lines[i].substr(SCMSsize+18, std::string::npos));
-                    } else if (lines[i].compare(SCMSsize, 18, "AC.Accel[1].Acc = ") == 0) {
-                        _acc_b_y = std::stod(lines[i].substr(SCMSsize+18, std::string::npos));
-                    } else if (lines[i].compare(SCMSsize, 18, "AC.Accel[2].Acc = ") == 0) {
-                        _acc_b_z = std::stod(lines[i].substr(SCMSsize+18, std::string::npos));
-                    } else if (lines[i].compare(SCMSsize, 18, "AC.Gyro[0].Rate = ") == 0) {
-                        _gyro_b_x = std::stod(lines[i].substr(SCMSsize+18, std::string::npos));
-                    } else if (lines[i].compare(SCMSsize, 18, "AC.Gyro[1].Rate = ") == 0) {
-                        _gyro_b_y = std::stod(lines[i].substr(SCMSsize+18, std::string::npos));
-                    } else if (lines[i].compare(SCMSsize, 18, "AC.Gyro[2].Rate = ") == 0) {
-                        _gyro_b_z = std::stod(lines[i].substr(SCMSsize+18, std::string::npos));
-                    } else if (lines[i].compare(SCMSsize, 14, "AC.Whl[0].H = ") == 0) {
-                        _rw_momentum_0 = std::stod(lines[i].substr(SCMSsize+14, std::string::npos));
-                    } else if (lines[i].compare(SCMSsize, 14, "AC.Whl[1].H = ") == 0) {
-                        _rw_momentum_1 = std::stod(lines[i].substr(SCMSsize+14, std::string::npos));
-                    } else if (lines[i].compare(SCMSsize, 14, "AC.Whl[2].H = ") == 0) {
-                        _rw_momentum_2 = std::stod(lines[i].substr(SCMSsize+14, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 14, "GPS[0].PosW = ") == 0) {
+                        _dp.parse_double_vector(lines[i].substr(SCMSsize+14, std::string::npos), _pos_ecef);
+                    } else if (lines[i].compare(SCMSsize, 14, "GPS[0].VelW = ") == 0) {
+                        _dp.parse_double_vector(lines[i].substr(SCMSsize+14, std::string::npos), _vel_ecef);
+                    } else if (lines[i].compare(SCMSsize, 19, "Accel[0].TrueAcc = ") == 0) {
+                        _acc_b_x = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Accel[1].TrueAcc = ") == 0) {
+                        _acc_b_y = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Accel[2].TrueAcc = ") == 0) {
+                        _acc_b_z = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Gyro[0].TrueRate = ") == 0) {
+                        _gyro_b_x = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Gyro[1].TrueRate = ") == 0) {
+                        _gyro_b_y = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Gyro[2].TrueRate = ") == 0) {
+                        _gyro_b_z = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 11, "Whl[0].H = ") == 0) {
+                        _rw_momentum_0 = std::stod(lines[i].substr(SCMSsize+11, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 11, "Whl[1].H = ") == 0) {
+                        _rw_momentum_1 = std::stod(lines[i].substr(SCMSsize+11, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 11, "Whl[2].H = ") == 0) {
+                        _rw_momentum_2 = std::stod(lines[i].substr(SCMSsize+11, std::string::npos));
                     } 
                 }
             }

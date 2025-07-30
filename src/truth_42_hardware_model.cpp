@@ -10,6 +10,7 @@ namespace Nos3
     {
         std::string connection_string = config.get("common.nos-connection-string", "tcp://127.0.0.1:12001"); // Get the NOS engine connection string, needed for the busses
         sim_logger->info("SampleHardwareModel::SampleHardwareModel:  NOS Engine connection string: %s.", connection_string.c_str());
+        sleep(10); // Start delay
 
         /* vvv 1. Get a data provider */
         /* !!! If your sim does not *need* a data provider, delete this block. */
