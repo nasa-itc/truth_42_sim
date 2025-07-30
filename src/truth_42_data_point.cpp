@@ -43,7 +43,9 @@ namespace Nos3
             _bvb.resize(3);
             _Hvb.resize(3);
             _wn.resize(3);
-            _qn.resize(3);
+            _qn.resize(4);
+            _pos_ecef.resize(3);
+            _vel_ecef.resize(3);
             std::vector<double> posr(3), posn(3), velr(3), veln(3);
             for (unsigned int i = 0; i < lines.size(); i++) {
                 if (lines[i].compare(0, 4, "TIME") == 0) { // e.g. TIME 2017-181-16:00:16.333600000
@@ -81,7 +83,29 @@ namespace Nos3
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+10, std::string::npos), _wn);
                     } else if (lines[i].compare(SCMSsize, 10, "B[0].qn = ") == 0) {
                         _dp.parse_double_vector(lines[i].substr(SCMSsize+10, std::string::npos), _qn);
-                    }
+                    } else if (lines[i].compare(SCMSsize, 14, "GPS[0].PosW = ") == 0) {
+                        _dp.parse_double_vector(lines[i].substr(SCMSsize+14, std::string::npos), _pos_ecef);
+                    } else if (lines[i].compare(SCMSsize, 14, "GPS[0].VelW = ") == 0) {
+                        _dp.parse_double_vector(lines[i].substr(SCMSsize+14, std::string::npos), _vel_ecef);
+                    } else if (lines[i].compare(SCMSsize, 19, "Accel[0].TrueAcc = ") == 0) {
+                        _acc_b_x = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Accel[1].TrueAcc = ") == 0) {
+                        _acc_b_y = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Accel[2].TrueAcc = ") == 0) {
+                        _acc_b_z = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Gyro[0].TrueRate = ") == 0) {
+                        _gyro_b_x = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Gyro[1].TrueRate = ") == 0) {
+                        _gyro_b_y = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 19, "Gyro[2].TrueRate = ") == 0) {
+                        _gyro_b_z = std::stod(lines[i].substr(SCMSsize+19, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 11, "Whl[0].H = ") == 0) {
+                        _rw_momentum_0 = std::stod(lines[i].substr(SCMSsize+11, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 11, "Whl[1].H = ") == 0) {
+                        _rw_momentum_1 = std::stod(lines[i].substr(SCMSsize+11, std::string::npos));
+                    } else if (lines[i].compare(SCMSsize, 11, "Whl[2].H = ") == 0) {
+                        _rw_momentum_2 = std::stod(lines[i].substr(SCMSsize+11, std::string::npos));
+                    } 
                 }
             }
             for (int i = 0; i < 3; i++) {
@@ -109,13 +133,18 @@ namespace Nos3
         ss << "Truth 42 Data Point:";
         ss << " UTC Year-DayOfYear-Time: " << std::setw(4) << _year << "-" << std::setw(3) << _doy << "(" << std::setw(2) << _month << "/" << std::setw(2) << _day << ")";
         ss << "T" << std::setw(2) << _utc_hh << ":" << std::setw(2) << _utc_mm << ":" << std::setw(9) << std::setprecision(6) << _utc_ss;
-        ss << std::setprecision(0) << " Pos: " << _pos[0] << ", " << _pos[1] << ", " << _pos[2];
-        ss << std::setprecision(0) << " Vel: " << _vel[0] << ", " << _vel[1] << ", " << _vel[2];
-        ss << std::setprecision(3) << " svb: " << _svb[0] << ", " << _svb[1] << ", " << _svb[2];
-        ss << std::setprecision(9) << " bvb: " << _bvb[0] << ", " << _bvb[1] << ", " << _bvb[2];
-        ss << std::setprecision(3) << " Hvb: " << _Hvb[0] << ", " << _Hvb[1] << ", " << _Hvb[2];
-        ss << std::setprecision(3) << " wn : " << _wn[0]  << ", " << _wn[1]  << ", " << _wn[2];
-        ss << std::setprecision(3) << " qn : " << _qn[0]  << ", " << _qn[1]  << ", " << _qn[2]  << ", " << _qn[3];
+        ss << std::setprecision(0) << " Pos:  "    << _pos[0]      << ", " << _pos[1]      << ", " << _pos[2];
+        ss << std::setprecision(0) << " Vel:  "    << _vel[0]      << ", " << _vel[1]      << ", " << _vel[2];
+        ss << std::setprecision(3) << " svb:  "    << _svb[0]      << ", " << _svb[1]      << ", " << _svb[2];
+        ss << std::setprecision(9) << " bvb:  "    << _bvb[0]      << ", " << _bvb[1]      << ", " << _bvb[2];
+        ss << std::setprecision(3) << " Hvb:  "    << _Hvb[0]      << ", " << _Hvb[1]      << ", " << _Hvb[2];
+        ss << std::setprecision(3) << " wn :  "    << _wn[0]       << ", " << _wn[1]       << ", " << _wn[2];
+        ss << std::setprecision(3) << " qn :  "    << _qn[0]       << ", " << _qn[1]       << ", " << _qn[2]       << ", " << _qn[3];
+        ss << std::setprecision(0) << " PosW: "    << _pos_ecef[0] << ", " << _pos_ecef[1] << ", " << _pos_ecef[2];
+        ss << std::setprecision(0) << " VelW: "    << _vel_ecef[0] << ", " << _vel_ecef[1] << ", " << _vel_ecef[2];
+        ss << std::setprecision(3) << " LinAccB: " << _acc_b_x     << ", " << _acc_b_y     << ", " << _acc_b_z;
+        ss << std::setprecision(5) << " GyroB: "   << _gyro_b_x    << ", " << _gyro_b_y    << ", " << _gyro_b_z;
+        ss << std::setprecision(6) << " rwH: "     << _rw_momentum_0 << ", " << _rw_momentum_1 << ", " << _rw_momentum_2;
 
         return ss.str();
     }

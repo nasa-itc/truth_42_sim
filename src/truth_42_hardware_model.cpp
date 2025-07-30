@@ -10,6 +10,7 @@ namespace Nos3
     {
         std::string connection_string = config.get("common.nos-connection-string", "tcp://127.0.0.1:12001"); // Get the NOS engine connection string, needed for the busses
         sim_logger->info("SampleHardwareModel::SampleHardwareModel:  NOS Engine connection string: %s.", connection_string.c_str());
+        sleep(10); // Start delay
 
         /* vvv 1. Get a data provider */
         /* !!! If your sim does not *need* a data provider, delete this block. */
@@ -79,19 +80,36 @@ namespace Nos3
         }
     }
 
-    /*
-        Start hostname snippet from https://stackoverflow.com/questions/9400756/ip-address-from-host-name-in-windows-socket-programming
-    */
+
     std::string Truth42HardwareModel::HostToIp(const std::string& host) 
     {
-        hostent* hostname = gethostbyname(host.c_str());
-        if(hostname)
-            return std::string(inet_ntoa(**(in_addr**)hostname->h_addr_list));
+        struct addrinfo hints, *res, *p;
+        void *addr;
+        char ipstr[INET_ADDRSTRLEN] = "";
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET; // Use AF_UNSPEC for IPv6 support if needed
+        hints.ai_socktype = SOCK_STREAM;
+
+        if (getaddrinfo(host.c_str(), NULL, &hints, &res) == 0) 
+        {
+            for (p = res; p != NULL; p = p->ai_next) 
+            {
+                struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
+                addr = &(ipv4->sin_addr);
+
+                // Convert to string
+                if (inet_ntop(p->ai_family, addr, ipstr, sizeof(ipstr)) != NULL)
+                {
+                    freeaddrinfo(res);
+                    return std::string(ipstr);
+                }
+            }
+            freeaddrinfo(res);
+        }
+
         return {};
     }
-    /*
-        End hostname snippet from https://stackoverflow.com/questions/9400756/ip-address-from-host-name-in-windows-socket-programming
-    */
 
     void Truth42HardwareModel::send_streaming_data(NosEngine::Common::SimTime time)
     {
@@ -105,11 +123,11 @@ namespace Nos3
             sim_logger->debug("send_streaming_data:  Data point:  %s", data_point->to_string().c_str());
             sim_logger->debug("send_streaming_data:  Writing data:  %s\n", uint8_vector_to_hex_string(data).c_str());
 
-            char s[197];
+            char s[317];
             for (unsigned int i=0; i < data.size(); i++) {
                 s[i] = data[i];
             }
-            s[196] = 0;
+            s[316] = 0;
             _socket->send_to(boost::asio::buffer(s), _remote);
             _prev_time = abs_time;
         }
@@ -192,6 +210,42 @@ namespace Nos3
         out_data.insert(out_data.end(), append.begin(), append.end());
         append = double_to_uint8_vector(v[3]);
         out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_pos_ecef();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        v = data_point.get_vel_ecef();
+        append = double_to_uint8_vector(v[0]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[1]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(v[2]);
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
+        append = double_to_uint8_vector(data_point.get_acc_x());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_acc_y());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_acc_z());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_gyro_x());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_gyro_y());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_gyro_z());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_rwh_0());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_rwh_1());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+        append = double_to_uint8_vector(data_point.get_rwh_2());
+        out_data.insert(out_data.end(), append.begin(), append.end());
+
 
         return out_data;
     }
